@@ -133,8 +133,9 @@
     .c-br { bottom:-15px; right:-15px; border-left:none; border-top:none; }
 
     #grid {
-      display: grid; gap: 4px; position: relative; width: 100%; aspect-ratio: 1/1;
-      transform-style: preserve-3d;
+      display: grid; gap: 2px; position: relative; width: 100%; aspect-ratio: 1/1;
+      transform-style: preserve-3d; touch-action: none;
+      user-select: none; -webkit-user-select: none;
     }
 
     /* 3D CUBES / CELLS */
@@ -184,15 +185,34 @@
     }
     .cell-wrapper.selected-visual .cell::before { transform: translateZ(-20px) scale(0.9); background: rgba(100,0,20,0.9); }
 
-    /* Permanently Found state */
+    /* Permanently Found state (ROMANTIC BLOOM) */
     .cell-wrapper.found .cell {
-      color: #fff; background: rgba(255,45,120,0.85); border-color: var(--gold);
-      text-shadow: 0 0 10px #fff;
-      transform: translateZ(15px);
-      box-shadow: 0 0 15px var(--rose);
-      animation: pulseFound 2s infinite ease-in-out;
+      color: #fff; background: linear-gradient(135deg, var(--rose), var(--ruby)); border-color: var(--gold);
+      text-shadow: 0 0 10px #fff; font-weight: 900;
+      transform: translateZ(30px) scale(1.1);
+      box-shadow: 0 0 20px rgba(255,45,120,0.8), inset 0 0 10px rgba(255,255,255,0.5);
+      z-index: 50;
+      animation: romanticBloom 2s forwards;
     }
-    @keyframes pulseFound { 0%,100%{transform:translateZ(15px);box-shadow:0 0 15px var(--rose)} 50%{transform:translateZ(25px);box-shadow:0 0 25px var(--gold)} }
+    @keyframes romanticBloom {
+      0% { transform: translateZ(10px) scale(1); box-shadow: 0 0 10px var(--rose); background: #fff; color: var(--rose); }
+      50% { transform: translateZ(50px) scale(1.2); box-shadow: 0 0 50px var(--rose), 0 0 30px var(--gold); filter: brightness(1.5); }
+      100% { transform: translateZ(30px) scale(1.1); box-shadow: 0 0 20px var(--rose), inset 0 0 10px #fff; }
+    }
+
+    /* Floating hearts when completing a word */
+    .magic-heart {
+      position: absolute; pointer-events: none; z-index: 1000;
+      color: var(--rose); font-size: clamp(1.5rem, 4vw, 2.5rem);
+      text-shadow: 0 0 10px #fff, 0 0 20px var(--rose);
+      transform-style: preserve-3d;
+      animation: floatUpMagic 2s ease-out forwards;
+    }
+    @keyframes floatUpMagic {
+      0% { transform: translate(-50%, -50%) scale(0) translateZ(50px); opacity: 0; }
+      20% { transform: translate(-50%, -50%) scale(1.2) translateZ(100px); opacity: 1; filter: brightness(1.5); }
+      100% { transform: translate(-50%, -50%) scale(0.8) translate3d(var(--tx), var(--ty), 200px); opacity: 0; }
+    }
 
     /* Magic Selection SVG Ray */
     #selection-layer {
@@ -249,94 +269,126 @@
        ========================================================= */
     #completion-overlay {
       position: fixed; inset: 0; z-index: 99999; display: none;
-      background: radial-gradient(circle at center, #260010 0%, #000 100%);
-      overflow: hidden; perspective: 1500px;
+      background: radial-gradient(circle at center, #1a000b 0%, #000 100%);
+      overflow: hidden; perspective: 2000px;
     }
     #completion-overlay.active { display: block; animation: finaleFadeIn 3s ease forwards; }
     @keyframes finaleFadeIn { 0%{opacity:0} 100%{opacity:1} }
 
-    /* The immense 3D physical heart */
-    .colossal-heart-container {
-      position: absolute; top: 40%; left: 50%;
-      transform-style: preserve-3d; pointer-events: none;
-      z-index: 10;
+    /* God Rays */
+    .god-rays {
+      position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+      background: repeating-conic-gradient(from 0deg, transparent 0deg, rgba(255,207,51,0.05) 10deg, transparent 20deg);
+      animation: spinRays 60s linear infinite; mix-blend-mode: screen; pointer-events: none;
+      z-index: 1;
     }
-    
-    .colossal-heart {
-      position: absolute;
-      width: 200px; height: 200px;
-      background: var(--rose);
-      transform: translate(-50%, -50%) rotate(-45deg);
-      box-shadow: 0 0 150px var(--ruby), inset 0 0 50px #fff;
-      animation: colossalBeat 1.4s ease-in-out infinite;
+    @keyframes spinRays { 100% { transform: rotate(360deg); } }
+
+    /* ====== JAW-DROPPING EPIC 3D RING & TUNNEL ====== */
+    .star-tunnel { position: absolute; inset: 0; perspective: 1000px; overflow: hidden; pointer-events: none; z-index: 2; }
+    .star-layer {
+      position: absolute; inset: -100%; border-radius: 50%;
+      background: radial-gradient(circle at center, transparent 30%, rgba(255,45,120,0.1) 60%, transparent 80%);
+      border: 4px dashed rgba(255,207,51,0.4);
+      animation: warpDrive 6s linear infinite; transform-style: preserve-3d;
     }
-    .colossal-heart::before, .colossal-heart::after {
-      content: ''; position: absolute; width: 200px; height: 200px;
-      background: inherit; border-radius: 50%;
-      box-shadow: inherit;
+    .star-layer:nth-child(1) { animation-delay: 0s; }
+    .star-layer:nth-child(2) { animation-delay: -1.5s; }
+    .star-layer:nth-child(3) { animation-delay: -3s; }
+    .star-layer:nth-child(4) { animation-delay: -4.5s; }
+    @keyframes warpDrive {
+      0% { transform: translateZ(-2000px) rotate(0deg) scale(0.1); opacity: 0; }
+      50% { opacity: 1; border-width: 15px; border-color: rgba(255,207,51,0.8); box-shadow: inset 0 0 100px var(--rose); }
+      100% { transform: translateZ(800px) rotate(180deg) scale(3); opacity: 0; }
     }
-    .colossal-heart::before { top: -100px; left: 0; }
-    .colossal-heart::after { top: 0; left: 100px; }
-    
-    @keyframes colossalBeat {
-      0%{ transform: translate(-50%, -50%) rotate(-45deg) scale(0.8) translateZ(-200px); filter: brightness(1) drop-shadow(0 0 100px var(--ruby)); }
-      20%{ transform: translate(-50%, -50%) rotate(-45deg) scale(1.2) translateZ(100px); filter: brightness(1.5) drop-shadow(0 0 300px var(--rose)); }
-      40%{ transform: translate(-50%, -50%) rotate(-45deg) scale(0.9) translateZ(-50px); filter: brightness(1.2); }
-      60%{ transform: translate(-50%, -50%) rotate(-45deg) scale(1.3) translateZ(150px); filter: brightness(1.6) drop-shadow(0 0 350px var(--gold)); }
-      100%{ transform: translate(-50%, -50%) rotate(-45deg) scale(0.8) translateZ(-200px); filter: brightness(1); }
+
+    .epic-ring-container {
+      position: absolute; top: 35%; left: 50%; width: 350px; height: 350px;
+      transform-style: preserve-3d; animation: floatRingEpic 6s ease-in-out infinite; z-index: 30; pointer-events: none;
+    }
+    .epic-ring-spinner {
+      position: absolute; inset: 0; transform-style: preserve-3d; animation: spinRingEpic 15s linear infinite;
+    }
+    .epic-ring-band {
+      position: absolute; inset: 0; border: 25px solid #ffdf00; border-radius: 50%;
+      box-shadow: 0 0 100px #ffaa00, inset 0 0 60px #ffaa00;
+      transform: rotateX(75deg); transform-style: preserve-3d;
+    }
+    .epic-diamond {
+      position: absolute; top: -60px; left: 50%; transform: translateX(-50%) rotateX(90deg);
+      width: 120px; height: 120px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(200,250,255,0.9));
+      clip-path: polygon(50% 0%, 100% 30%, 50% 100%, 0% 30%);
+      box-shadow: 0 0 250px #fff, 0 0 400px #00e5ff; filter: drop-shadow(0 -50px 50px #fff);
+    }
+    .epic-inner-heart {
+      position: absolute; top: 50%; left: 50%; width: 140px; height: 140px;
+      background: linear-gradient(135deg, #ff6b9e, #ff2d78, #c90035, #5c0018);
+      transform: translate(-50%, -50%) rotateZ(45deg); 
+      animation: innerHeartBeatEpic 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) infinite;
+      box-shadow: 0 0 250px #ff2d78, inset 0 0 60px #fff;
+    }
+    .epic-inner-heart::before, .epic-inner-heart::after {
+      content: ''; position: absolute; width: 140px; height: 140px;
+      background: inherit; border-radius: 50%; box-shadow: inherit;
+    }
+    .epic-inner-heart::before { top: -70px; left: 0; }
+    .epic-inner-heart::after { top: 0; left: 70px; }
+
+    @keyframes floatRingEpic {
+      0%, 100% { transform: translate(-50%, -50%) translateY(0) scale(1); filter: drop-shadow(0 50px 50px rgba(0,0,0,0.8)); }
+      50% { transform: translate(-50%, -50%) translateY(-50px) scale(1.1); filter: drop-shadow(0 150px 80px rgba(255,207,51,0.5)); }
+    }
+    @keyframes spinRingEpic { 100% { transform: rotateY(360deg); } }
+    @keyframes innerHeartBeatEpic {
+      0%, 100% { transform: translate(-50%, -50%) rotateZ(45deg) scale(0.9); }
+      15%{ transform: translate(-50%, -50%) rotateZ(45deg) scale(1.3); filter: brightness(1.5);}
+      30%{ transform: translate(-50%, -50%) rotateZ(45deg) scale(1.0); }
+      45%{ transform: translate(-50%, -50%) rotateZ(45deg) scale(1.4); filter: brightness(2) drop-shadow(0 0 100px #fff);}
     }
 
     #finale-canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 5; mix-blend-mode: screen; }
 
     .finale-ui {
       position: absolute; inset: 0; display: flex; flex-direction: column;
-      align-items: center; justify-content: flex-end; padding-bottom: 10vh;
+      align-items: center; justify-content: flex-end; padding-bottom: 5vh;
       z-index: 50; transform-style: preserve-3d; pointer-events: none;
     }
 
-    .finale-huge-text {
+    .finale-super-title {
       font-family: 'Great Vibes', cursive;
-      font-size: clamp(3rem, 12vw, 8rem);
-      color: #fff;
-      text-shadow: 0 0 30px var(--rose), 0 0 100px var(--gold);
-      opacity: 0; transform: translateZ(-1000px) scale(0.1);
-      transition: all 4s cubic-bezier(0.175, 0.885, 0.32, 1.275) 1s;
-      text-align: center; line-height: 1.1;
+      font-size: clamp(2.5rem, 10vw, 8rem);
+      background: linear-gradient(180deg, #fff 0%, #ffd0e0 50%, #ff2d78 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 40px rgba(255,45,120,0.8), 0 0 150px rgba(255,207,51,0.5);
+      opacity: 0; transform: translateZ(-2000px) scale(0.1);
+      transition: all 5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 1s;
+      text-align: center; line-height: 1; margin-bottom: 1rem;
     }
-    .finale-huge-text.show { opacity: 1; transform: translateZ(200px) scale(1); }
+    .finale-super-title.show { opacity: 1; transform: translateZ(300px) scale(1); }
 
     .finale-poem {
       font-family: 'Cinzel Decorative', serif;
-      font-size: clamp(1rem, 4vw, 2rem);
-      color: var(--gold);
-      margin-top: 2rem; text-align: center;
-      opacity: 0; transform: translateY(50px) translateZ(50px);
-      transition: all 3s ease 3s;
-      text-shadow: 0 5px 20px rgba(0,0,0,0.9);
-      max-width: 80%;
+      font-size: clamp(1rem, 4vw, 2.5rem);
+      color: #fff;
+      text-shadow: 0 5px 20px #000, 0 0 20px var(--gold);
+      text-align: center; max-width: 95%;
+      opacity: 0; transform: translateY(100px) translateZ(100px);
+      transition: all 4s ease 3s; line-height: 1.4;
     }
-    .finale-poem.show { opacity: 1; transform: translateY(0) translateZ(50px); }
+    .finale-poem.show { opacity: 1; transform: translateY(0) translateZ(100px); }
 
     .finale-btn {
-      margin-top: 3rem; padding: 1.2rem 4rem;
-      background: linear-gradient(135deg, var(--rose) 0%, var(--gold) 100%);
-      border: 2px solid #fff; border-radius: 50px;
-      color: var(--dark); font-family: 'Outfit', sans-serif; font-size: 1.2rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase;
-      box-shadow: 0 20px 50px rgba(255,45,120,0.8), inset 0 0 20px rgba(255,255,255,0.8);
+      margin-top: 3rem; padding: 1.5rem 5rem;
+      background: linear-gradient(135deg, var(--gold) 0%, #ffea00 100%);
+      border: none; border-radius: 50px;
+      color: var(--dark); font-family: 'Outfit', sans-serif; font-size: 1.5rem; font-weight: 900; letter-spacing: 0.15em; text-transform: uppercase;
+      box-shadow: 0 0 50px var(--gold), inset 0 0 20px #fff;
       cursor: pointer; pointer-events: auto; opacity: 0;
-      transform: translateY(100px); transition: all 2s ease 5s;
+      transform: translateY(150px) scale(0.8); transition: all 3s cubic-bezier(0.175, 0.885, 0.32, 1.275) 6s;
     }
-    .finale-btn.show { opacity: 1; transform: translateY(0); }
-    .finale-btn:hover { transform: scale(1.1); box-shadow: 0 30px 60px var(--gold); }
-
-    /* Orbital rings around the heart */
-    .orbital-ring {
-      position: absolute; top:50%; left:50%;
-      border: 3px solid rgba(255,207,51,0.5); border-radius: 50%;
-      transform-style: preserve-3d;
-      animation: spinRing 10s linear infinite;
-    }
-    @keyframes spinRing { 100% { transform: translate(-50%,-50%) rotateX(var(--rx)) rotateY(var(--ry)) rotateZ(360deg); } }
+    .finale-btn.show { opacity: 1; transform: translateY(0) scale(1); }
+    .finale-btn:hover { transform: scale(1.1); box-shadow: 0 0 100px var(--gold), 0 0 50px #fff; }
 
     /* Floating Deep Phrases */
     .deep-phrase {
@@ -414,21 +466,26 @@
      FINALE OVERLAY: THE MOST ROMANTIC EVER
      ======================================================== -->
 <div id="completion-overlay">
+  <div class="god-rays"></div>
+  <div class="star-tunnel">
+      <div class="star-layer"></div><div class="star-layer"></div><div class="star-layer"></div><div class="star-layer"></div>
+  </div>
   <canvas id="finale-canvas"></canvas>
   
-  <div class="colossal-heart-container" id="heart-container">
-    <div class="orbital-ring" style="width: 500px; height: 500px; --rx: 60deg; --ry: 20deg;"></div>
-    <div class="orbital-ring" style="width: 400px; height: 400px; --rx: -45deg; --ry: 45deg;"></div>
-    <div class="orbital-ring" style="width: 600px; height: 600px; --rx: 20deg; --ry: -60deg;"></div>
-    <div class="colossal-heart"></div>
+  <div class="epic-ring-container">
+    <div class="epic-ring-spinner">
+      <div class="epic-ring-band"></div>
+      <div class="epic-diamond"></div>
+    </div>
+    <div class="epic-inner-heart"></div>
   </div>
 
   <div id="phrases-universe"></div>
 
   <div class="finale-ui">
-    <div id="finale-title" class="finale-huge-text">Eres el Amor<br>de mi Vida</div>
-    <div id="finale-poem" class="finale-poem">Cada latido, cada suspiro, es y será por siempre tuyo. Mi alma te pertenece.</div>
-    <button class="finale-btn" id="finale-btn" onclick="restartGame()">Reescribir las Estrellas 💫</button>
+    <div id="finale-title" class="finale-super-title">Eres mi<br>Destino Eterno</div>
+    <div id="finale-poem" class="finale-poem">Me atravesaste el alma. Todo mi mundo cobra sentido si es contigo.<br>Mi alma te eligió, te elige y te elegirá en infinitos universos.<br>ERES EL AMOR DE MI VIDA.</div>
+    <button class="finale-btn" id="finale-btn" onclick="restartGame()">Dime que Sí 💍</button>
   </div>
 </div>
 
@@ -438,19 +495,20 @@
 // ════════════════════════════════════════════════════════════
 
 const FULL_WORD_POOL = [
-  'AMOR','ALMA','CORAZON','PASION','ETERNIDAD','SUSURRO','CARICIA','LATIDO',
-  'PROMESA','DESEO','ADORAR','ILUSION','ROMANCE','ABRAZO','ESTRELLA','DULZURA',
-  'SUBLIME','INFINITO','DESTINO','VIDA','UNIVERSO','MILAGRO','CIELO','MAGIA'
+  'AMORETERNO','ALMAGEMELA','CORAZONMIO','TEAMO','ETERNIDAD','BESOS','CARICIAS','PASIONLOCA',
+  'PROMESAFIEL','COMPROMISO','ADORARTE','ENAMORADOS','ROMANCE','ABRAZOS','ESTRELLAS','DULZURA',
+  'SUBLIMEAMOR','INFINITO','DESTINO','VIDAMIA','UNIVERSO','MILAGROS','CASATECONMIGO','MAGIAPURA','LEALTAD',
+  'MATRIMONIO','FELICIDAD','TESORO','LUZDEMIVIDA','ENTREGA'
 ];
 
 const DEEP_PHRASES = [
   "Dueña de mi eternidad", "Tú eres mi universo", "Juntos para siempre",
   "Mil vidas te buscaría", "Amor verdadero", "Mi estrella guía",
-  "Luz de mi oscuridad", "Mi principio y mi fin", "Bendita tu existencia"
+  "Luz de mi oscuridad", "Mi principio y mi fin", "Bendita tu existencia", "Cásate conmigo y hagamos eterno este amor"
 ];
 
-const GRID_SIZE = 12; // 12x12 ensures it is quite difficult on a phone, but not microscopic
-const WORDS_TO_FIND = 12;
+const GRID_SIZE = 15; // Increased to 15x15 for extreme difficulty
+const WORDS_TO_FIND = 15;
 const ICONS = ['💖','✨','🌹','💍','🔥','⭐','🦋','💎','💌','💘','💝','💓'];
 
 let ROMANTIC_WORDS = [], grid = [], cellEls = [], wrapperEls = [];
@@ -513,16 +571,15 @@ function placeWords() {
 }
 
 function fillGrid() {
-  const ALPHABET = 'ABCDEFGHIJKLMNÑOPQRSTUVWXYZ';
+  const ALPHABET = 'AEIOUBCDFGLMNPRSTV';
   // Create a string of all letters used in chosen words to act as camouflage
   const wordLetters = ROMANTIC_WORDS.join(''); 
   
   for(let r=0;r<GRID_SIZE;r++) {
     for(let c=0;c<GRID_SIZE;c++) {
       if(!grid[r][c]) {
-        // 60% chance to pick a letter that belongs to the romantic words (makes it visually harder to spot words)
-        // 40% chance to pick purely random letter
-        if (Math.random() > 0.4 && wordLetters.length > 0) {
+        // 90% chance to pick a letter that belongs to the romantic words (makes it EXTREMELY hard)
+        if (Math.random() > 0.1 && wordLetters.length > 0) {
           grid[r][c] = wordLetters[Math.floor(Math.random() * wordLetters.length)];
         } else {
           grid[r][c] = ALPHABET[Math.floor(Math.random() * ALPHABET.length)];
@@ -583,11 +640,22 @@ gridEl.addEventListener('touchstart', handlePointerDown, {passive:false});
 window.addEventListener('touchmove', handlePointerMove, {passive:false});
 window.addEventListener('touchend', handlePointerUp);
 
-function getCellFromPoint(clientX, clientY) {
-  const el = document.elementFromPoint(clientX, clientY);
-  if(!el) return null;
-  const wrap = el.closest('.cell-wrapper');
-  if(wrap) return [parseInt(wrap.dataset.r,10), parseInt(wrap.dataset.c,10)];
+function getCellFromPoint(cx, cy) {
+  const el = document.elementFromPoint(cx, cy);
+  const wrap = el ? el.closest('.cell-wrapper') : null;
+  if (wrap) return [parseInt(wrap.dataset.r,10), parseInt(wrap.dataset.c,10)];
+  
+  // Mathematical fallback for flawless mobile selection!
+  // Even if they drag off the element, math will snap to the nearest cell.
+  const rect = gridEl.getBoundingClientRect();
+  const pad = 60; // Huge forgiveness padding
+  if (cx >= rect.left - pad && cx <= rect.right + pad && cy >= rect.top - pad && cy <= rect.bottom + pad) {
+     let x = cx - rect.left;
+     let y = cy - rect.top;
+     let c = Math.min(GRID_SIZE - 1, Math.max(0, Math.floor((x / rect.width) * GRID_SIZE)));
+     let r = Math.min(GRID_SIZE - 1, Math.max(0, Math.floor((y / rect.height) * GRID_SIZE)));
+     return [r, c];
+  }
   return null;
 }
 
@@ -605,6 +673,14 @@ function spawnTouchSparkle(x,y) {
    const size = Math.random()*30+15; sp.style.width=size+'px'; sp.style.height=size+'px';
    sp.style.setProperty('--tx',(Math.random()-0.5)*200+'px'); sp.style.setProperty('--ty',(Math.random()-0.5)*200+'px');
    document.body.appendChild(sp); setTimeout(()=>sp.remove(), 500);
+}
+
+function spawnMagicHeart(x, y) {
+   const h = document.createElement('div'); h.className = 'magic-heart';
+   h.innerHTML = ['💖','✨','🌹','💕'][Math.floor(Math.random()*4)];
+   h.style.left=x+'px'; h.style.top=y+'px';
+   h.style.setProperty('--tx',(Math.random()-0.5)*150+'px'); h.style.setProperty('--ty', (Math.random()*-150 - 50)+'px');
+   document.body.appendChild(h); setTimeout(()=>h.remove(), 2000);
 }
 
 function handlePointerDown(e) {
@@ -680,15 +756,16 @@ function checkWord() {
     document.getElementById(`word-${matchW}`).classList.add('found-word');
     updateHUD();
     
-    // Massive explosion
+    // Romantic magical explosion (doesn't blind the board)
     matchC.forEach(([r,c],i)=>{
        setTimeout(()=>{
          const rx=cellEls[r][c].getBoundingClientRect();
-         for(let k=0;k<5;k++) spawnTouchSparkle(rx.left+rx.width/2, rx.top+rx.height/2);
-       }, i*80);
+         for(let k=0;k<4;k++) spawnTouchSparkle(rx.left+rx.width/2, rx.top+rx.height/2);
+         spawnMagicHeart(rx.left+rx.width/2, rx.top+rx.height/2);
+       }, i*100);
     });
 
-    if(foundWords.size===placedWords.length) setTimeout(triggerSuperMassiveFinale, 1000);
+    if(foundWords.size===placedWords.length) setTimeout(triggerSuperMassiveFinale, 2500);
   }
 }
 
