@@ -407,6 +407,34 @@
       70% { opacity:1; filter: blur(0px); }
       100% { opacity:0; transform: translate3d(var(--xend), var(--yend), 1000px) rotate(calc(var(--rot)*-1)); filter: blur(20px); }
     }
+
+    /* =========================================
+       ULTIMATE MOBILE OPTIMIZATION
+       ========================================= */
+    @media (max-width: 768px) {
+      body { padding-bottom: 5vh; }
+      header { padding: 0.5rem 0.5rem 0; transform: none; }
+      header h1 { font-size: clamp(2rem, 8vw, 3rem); animation: none; }
+      header p.desc { font-size: clamp(1.2rem, 5vw, 1.8rem); transform: none; }
+      
+      /* HUD compaction */
+      .hud { padding: 0.2rem; transform: none; gap: 0.5rem; }
+      .hud-box { padding: 0.3rem 1rem; }
+      
+      /* Flatten game components for MAX mobile precision and space */
+      .game-wrap { gap: 0.5rem; padding: 0.2rem; width: 100vw; max-width: 100vw; }
+      .board-container { padding: 0; perspective: none; }
+      .board-scene { transform: none !important; width: 98vw; max-width: 98vw; }
+      .board-outer { border-radius: 8px; padding: 4px; box-shadow: 0 10px 40px rgba(0,0,0,0.9); transform: none; }
+      
+      /* Make sure SVG overlays are flat too to match the 2D plane */
+      #selection-layer { transform: translateZ(5px); }
+      #found-lines { transform: translateZ(2px); }
+      
+      /* Words Slider takes full width cleanly */
+      .words-panel { padding: 0; width: 100vw; max-width: 100vw; transform: none; margin-top: 5px; }
+      #word-list { border-radius: 0; padding: 10px 10px; }
+    }
   </style>
 </head>
 <body>
