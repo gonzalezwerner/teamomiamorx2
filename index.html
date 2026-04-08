@@ -22,10 +22,11 @@
       background: radial-gradient(circle at 50% -20%, #2b001a 0%, var(--dark) 80%);
       font-family: 'Outfit', sans-serif;
       color: #ffeef5;
-      overflow: hidden;
-      height: 100vh;
-      display: flex; flex-direction: column;
+      overflow-x: hidden; overflow-y: auto; /* ENABLES VERTICAL SCROLL ON MOBILE */
+      min-height: 100vh;
+      display: flex; flex-direction: column; justify-content: flex-start; align-items: center;
       perspective: 2000px; /* Deep universe perspective */
+      padding-bottom: 2rem;
     }
 
     #ambient-canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
