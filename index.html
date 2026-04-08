@@ -244,22 +244,23 @@
       transform-style: preserve-3d; transform: translateZ(40px);
     }
     #word-list {
-      display: flex; flex-wrap: wrap; gap: 0.4rem; justify-content: center;
-      max-height: 25vh; overflow-y: auto; padding: 5px;
-      border-radius: 12px;
-      backdrop-filter: blur(10px);
-      touch-action: pan-y; /* FIXES SCROLLING ON MOBILE */
+      display: flex; flex-wrap: nowrap; gap: 0.6rem; justify-content: flex-start;
+      overflow-x: auto; overflow-y: hidden; padding: 10px 5px;
+      border-radius: 12px; backdrop-filter: blur(10px);
+      touch-action: pan-x; /* Allow horizontal scroll */
+      scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;
+      scrollbar-width: none; /* Hide scrollbar Firefox */
     }
-    #word-list::-webkit-scrollbar { width: 4px; }
-    #word-list::-webkit-scrollbar-thumb { background: var(--rose); border-radius: 4px; }
+    #word-list::-webkit-scrollbar { display: none; } /* Hide scrollbar WebKit */
     .word-item {
-      background: rgba(40, 0, 20, 0.9); border: 1px solid rgba(255,207,51,0.5);
-      border-radius: 30px; padding: 0.4rem 0.8rem;
-      font-size: clamp(0.8rem, 3.5vw, 1rem); font-weight: 800; letter-spacing: 0.05em;
+      background: rgba(40, 0, 20, 0.9); border: 1px solid rgba(255,207,51,0.6);
+      border-radius: 30px; padding: 0.5rem 1.2rem;
+      font-size: clamp(0.9rem, 4vw, 1.1rem); font-weight: 800; letter-spacing: 0.05em;
       color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.8);
-      display: flex; align-items: center; gap: 0.3rem;
+      display: flex; align-items: center; gap: 0.4rem;
       transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       transform-style: preserve-3d; box-shadow: 0 4px 15px rgba(0,0,0,0.8);
+      white-space: nowrap; flex-shrink: 0; scroll-snap-align: center;
     }
     .word-item.found-word {
       background: linear-gradient(45deg, var(--ruby), var(--rose)); border-color: var(--gold);
