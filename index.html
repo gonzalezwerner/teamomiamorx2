@@ -148,14 +148,15 @@
       position: absolute; inset: 0;
       display: flex; align-items: center; justify-content: center;
       font-family: 'Outfit', sans-serif; font-size: clamp(0.6rem, 2.5vw, 1.2rem); font-weight: 800;
-      color: rgba(255,255,255,0.7);
-      background: linear-gradient(135deg, rgba(255,45,120,0.1), rgba(100,0,40,0.3));
-      border: 1px solid rgba(255,45,120,0.2);
+      color: rgba(255,255,255,0.9);
+      text-shadow: 0 1px 3px rgba(0,0,0,0.9);
+      background: linear-gradient(135deg, rgba(255,45,120,0.15), rgba(100,0,40,0.4));
+      border: 1px solid rgba(255,207,51,0.15); /* Subtlest gold tint */
       border-radius: 6px; text-transform: uppercase;
       transform-origin: center center;
       transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       transform: translateZ(5px);
-      box-shadow: inset 0 2px 5px rgba(255,255,255,0.1);
+      box-shadow: inset 0 2px 5px rgba(255,255,255,0.15);
     }
     
     /* 3D Depth underlying box */
@@ -251,12 +252,13 @@
     #word-list::-webkit-scrollbar { width: 4px; }
     #word-list::-webkit-scrollbar-thumb { background: var(--rose); border-radius: 4px; }
     .word-item {
-      background: rgba(0, 0, 0, 0.7); border: 1px solid rgba(255,45,120,0.4);
-      border-radius: 30px; padding: 0.3rem 0.6rem;
-      font-size: clamp(0.6rem, 2.2vw, 0.85rem); font-weight: 700; letter-spacing: 0.05em;
-      color: var(--blush); display: flex; align-items: center; gap: 0.3rem;
+      background: rgba(40, 0, 20, 0.9); border: 1px solid rgba(255,207,51,0.5);
+      border-radius: 30px; padding: 0.4rem 0.8rem;
+      font-size: clamp(0.8rem, 3.5vw, 1rem); font-weight: 800; letter-spacing: 0.05em;
+      color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+      display: flex; align-items: center; gap: 0.3rem;
       transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      transform-style: preserve-3d; box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+      transform-style: preserve-3d; box-shadow: 0 4px 15px rgba(0,0,0,0.8);
     }
     .word-item.found-word {
       background: linear-gradient(45deg, var(--ruby), var(--rose)); border-color: var(--gold);
