@@ -663,7 +663,7 @@ function updateGeometry() {
   }
 }
 
-document.addEventListener('touchmove', e => { if(gameActive) e.preventDefault(); }, {passive:false});
+document.addEventListener('touchmove', e => { if(gameActive && selecting) e.preventDefault(); }, {passive:false});
 window.addEventListener('resize', updateGeometry);
 gridEl.addEventListener('pointerdown', handlePointerDown);
 window.addEventListener('pointermove', handlePointerMove);
