@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>💕 Infinito Amor — 3D Extremadamente Romántico</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Great+Vibes&family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --rose: #ff2d78;
+      --ruby: #c90035;
+      --burgundy: #5c0018;
+      --blush: #ffdbe3;
+      --gold: #ffcf33;
+      --gold-deep: #b38600;
+      --dark: #050002;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; touch-action: none; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      background: radial-gradient(circle at 50% -20%, #2b001a 0%, var(--dark) 80%);
+      font-family: 'Outfit', sans-serif;
+      color: #ffeef5;
+      overflow: hidden;
+      height: 100vh;
+      display: flex; flex-direction: column;
+      perspective: 2000px; /* Deep universe perspective */
+    }
+
+    #ambient-canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+
+    header {
+      text-align: center;
+      padding: clamp(0.5rem, 3vh, 2rem) 1rem 0;
+      position: relative; z-index: 10;
+      transform-style: preserve-3d;
+      transform: translateZ(50px);
+    }
+    header h1 {
+      font-family: 'Cinzel Decorative', cursive;
+      font-size: clamp(1.8rem, 7vw, 4rem);
+      font-weight: 900;
+      background: linear-gradient(180deg, #fff 0%, #ffc2d1 50%, var(--gold) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 10px 15px rgba(255,45,120,0.6));
+      letter-spacing: 2px;
+      margin-bottom: 0.2rem;
+      animation: floatTitle 4s ease-in-out infinite alternate;
+    }
+    @keyframes floatTitle { from { transform: translateY(-5px); } to { transform: translateY(5px); } }
+
+    header p.desc {
+      font-family: 'Great Vibes', cursive;
+      font-size: clamp(1.5rem, 5vw, 2.2rem);
+      color: var(--blush);
+      text-shadow: 0 0 10px var(--rose);
+      transform: translateZ(60px);
+    }
+
+    .hud {
+      display: flex; justify-content: center; gap: clamp(1rem, 4vw, 3rem);
+      padding: 0.5rem 1rem; z-index: 10;
+      transform-style: preserve-3d; transform: translateZ(30px);
+    }
+    .hud-box {
+      background: linear-gradient(135deg, rgba(255,45,120,0.1) 0%, rgba(0,0,0,0.6) 100%);
+      border: 1px solid rgba(255,207,51,0.3);
+      border-radius: 12px;
+      padding: 0.5rem clamp(1rem, 3vw, 2rem);
+      text-align: center;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.8), inset 0 2px 15px rgba(255,207,51,0.1);
+      position: relative; overflow: hidden;
+    }
+    .hud-box::before {
+      content:''; position:absolute; top:-50%; left:-50%; width:200%; height:200%;
+      background: linear-gradient(90deg, transparent, rgba(255,207,51,0.2), transparent);
+      transform: rotate(45deg) translateY(-100%);
+      animation: hudShine 3s infinite;
+    }
+    @keyframes hudShine { 100% { transform: rotate(45deg) translateY(100%); } }
+    .hud-label { font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); }
+    .hud-val { font-size: 1.4rem; font-family: 'Cinzel Decorative', serif; font-weight: 700; color: #fff; text-shadow: 0 0 15px var(--rose); }
+
+    /* === 3D GAME ARENA === */
+    .game-wrap {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      flex: 1; z-index: 10; position: relative; gap: 1rem;
+      transform-style: preserve-3d;
+    }
+
+    .board-container {
+      perspective: 1500px;
+      width: 100%; max-width: 600px;
+      display: flex; justify-content: center; align-items: center;
+      padding: 0 0.5rem;
+    }
+
+    .board-scene {
+      transform-style: preserve-3d;
+      /* Dynamic dramatic tilt */
+      transform: rotateX(25deg) rotateY(0deg) translateZ(-20px);
+      width: 100%; max-width: 480px;
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .board-outer {
+      position: relative;
+      background: linear-gradient(135deg, rgba(60,0,20,0.85), rgba(10,0,5,0.95));
+      border: 3px solid rgba(255,207,51,0.6);
+      border-radius: 20px;
+      padding: clamp(8px, 2vw, 15px);
+      box-shadow: 
+        0 40px 80px rgba(0,0,0,0.9), 
+        0 0 60px rgba(201,0,53,0.4),
+        inset 0 0 40px rgba(255,45,120,0.2);
+      transform-style: preserve-3d;
+      transform: translateZ(20px);
+    }
+
+    .board-outer::after { /* Floating pedestal aura */
+      content:''; position:absolute; inset:-20px;
+      background: radial-gradient(ellipse at center, rgba(201,0,53,0.4), transparent 60%);
+      transform: translateZ(-80px); filter: blur(30px); pointer-events: none;
+    }
+
+    /* Decorative ornate corners */
+    .corner { position: absolute; width: 30px; height: 30px; border: 2px solid var(--gold); border-radius: 3px; z-index: -1; }
+    .c-tl { top:-15px; left:-15px; border-right:none; border-bottom:none; }
+    .c-tr { top:-15px; right:-15px; border-left:none; border-bottom:none; }
+    .c-bl { bottom:-15px; left:-15px; border-right:none; border-top:none; }
+    .c-br { bottom:-15px; right:-15px; border-left:none; border-top:none; }
+
+    #grid {
+      display: grid; gap: 4px; position: relative; width: 100%; aspect-ratio: 1/1;
+      transform-style: preserve-3d;
+    }
+
+    /* 3D CUBES / CELLS */
+    .cell-wrapper {
+      position: relative; transform-style: preserve-3d;
+      width: 100%; height: 100%;
+    }
+    
+    .cell {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Outfit', sans-serif; font-size: clamp(0.6rem, 2.5vw, 1.2rem); font-weight: 800;
+      color: rgba(255,255,255,0.7);
+      background: linear-gradient(135deg, rgba(255,45,120,0.1), rgba(100,0,40,0.3));
+      border: 1px solid rgba(255,45,120,0.2);
+      border-radius: 6px; text-transform: uppercase;
+      transform-origin: center center;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      transform: translateZ(5px);
+      box-shadow: inset 0 2px 5px rgba(255,255,255,0.1);
+    }
+    
+    /* 3D Depth underlying box */
+    .cell::before {
+      content:''; position: absolute; inset: 0;
+      background: rgba(40,0,20,0.8); border-radius: 6px;
+      transform: translateZ(-8px) scale(0.98);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.8);
+      transition: all 0.3s;
+    }
+
+    body:not(.is-selecting) .cell-wrapper:hover .cell {
+      transform: translateZ(25px) scale(1.15);
+      color: #fff; background: rgba(201,0,53,0.8);
+      border-color: var(--gold);
+      box-shadow: 0 0 20px var(--rose), inset 0 2px 10px rgba(255,255,255,0.4);
+    }
+    
+    /* Active dragged selection */
+    .cell-wrapper.selected-visual .cell {
+      transform: translateZ(40px) scale(1.2) rotate(3deg) !important;
+      color: var(--dark); background: linear-gradient(135deg, var(--gold), #fffea6);
+      border-color: #fff;
+      text-shadow: 0 0 5px rgba(0,0,0,0.5);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.8), 0 0 30px var(--gold), inset 0 2px 15px rgba(255,255,255,0.8);
+      z-index: 100;
+    }
+    .cell-wrapper.selected-visual .cell::before { transform: translateZ(-20px) scale(0.9); background: rgba(100,0,20,0.9); }
+
+    /* Permanently Found state */
+    .cell-wrapper.found .cell {
+      color: #fff; background: rgba(255,45,120,0.85); border-color: var(--gold);
+      text-shadow: 0 0 10px #fff;
+      transform: translateZ(15px);
+      box-shadow: 0 0 15px var(--rose);
+      animation: pulseFound 2s infinite ease-in-out;
+    }
+    @keyframes pulseFound { 0%,100%{transform:translateZ(15px);box-shadow:0 0 15px var(--rose)} 50%{transform:translateZ(25px);box-shadow:0 0 25px var(--gold)} }
+
+    /* Magic Selection SVG Ray */
+    #selection-layer {
+      position: absolute; inset: 0; pointer-events: none; z-index: 200;
+      transform: translateZ(45px); /* Floats way above the cubes */
+      overflow: visible;
+    }
+    .sel-line { stroke: url(#gold-rose-grad); stroke-width: clamp(14px, 4vw, 24px); stroke-linecap: round; fill: none; opacity: 0.9; filter: drop-shadow(0 20px 20px rgba(255,45,120,1)); transition: stroke-width 0.2s; }
+    .sel-line-glow { stroke: #fff; stroke-width: clamp(4px, 1vw, 8px); stroke-linecap: round; fill: none; opacity: 1; filter: blur(2px); }
+    .sel-line-group.valid .sel-line { stroke: url(#pure-gold); filter: drop-shadow(0 20px 30px rgba(255,215,0,1)); stroke-width: clamp(20px, 6vw, 30px); }
+
+    /* Touch particle explosions */
+    .touch-sparkle {
+      position: absolute; pointer-events: none; z-index: 1000;
+      background: radial-gradient(circle, #fff, var(--gold) 40%, transparent 70%);
+      border-radius: 50%; mix-blend-mode: screen;
+      transform-style: preserve-3d;
+      animation: superExplode 0.5s ease-out forwards;
+    }
+    @keyframes superExplode { 0%{transform: translate(-50%, -50%) scale(1) translateZ(50px); opacity:1;} 100%{transform: translate(-50%, -50%) scale(0) translate3d(var(--tx), var(--ty), 150px); opacity:0;} }
+
+    /* Found line pill */
+    #found-lines { position: absolute; inset: 0; pointer-events: none; z-index: 80; transform: translateZ(12px); transform-style: preserve-3d; }
+
+    /* WORD LIST */
+    .words-panel {
+      width: 100%; max-width: 480px; padding: 0 1rem; z-index: 10;
+      transform-style: preserve-3d; transform: translateZ(40px);
+    }
+    #word-list {
+      display: flex; flex-wrap: wrap; gap: 0.6rem; justify-content: center;
+      max-height: 16vh; overflow-y: auto; padding: 10px;
+      border-radius: 12px;
+      backdrop-filter: blur(10px);
+    }
+    .word-item {
+      background: rgba(0, 0, 0, 0.7); border: 1px solid rgba(255,45,120,0.4);
+      border-radius: 30px; padding: 0.4rem 1rem;
+      font-size: clamp(0.7rem, 2.5vw, 0.9rem); font-weight: 700; letter-spacing: 0.1em;
+      color: var(--blush); display: flex; align-items: center; gap: 0.4rem;
+      transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      transform-style: preserve-3d; box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    }
+    .word-item.found-word {
+      background: linear-gradient(45deg, var(--ruby), var(--rose)); border-color: var(--gold);
+      color: #fff; transform: scale(1.1) translateZ(20px);
+      box-shadow: 0 10px 20px rgba(255,45,120,0.6), inset 0 2px 5px rgba(255,255,255,0.5);
+    }
+
+    /* =========================================================
+       SUPER MAS DEMASIADO ROMANTICO FINALE
+       ========================================================= */
+    #completion-overlay {
+      position: fixed; inset: 0; z-index: 99999; display: none;
+      background: radial-gradient(circle at center, #260010 0%, #000 100%);
+      overflow: hidden; perspective: 1500px;
+    }
+    #completion-overlay.active { display: block; animation: finaleFadeIn 3s ease forwards; }
+    @keyframes finaleFadeIn { 0%{opacity:0} 100%{opacity:1} }
+
+    /* The immense 3D physical heart */
+    .colossal-heart-container {
+      position: absolute; top: 40%; left: 50%;
+      transform-style: preserve-3d; pointer-events: none;
+      z-index: 10;
+    }
+    
+    .colossal-heart {
+      position: absolute;
+      width: 200px; height: 200px;
+      background: var(--rose);
+      transform: translate(-50%, -50%) rotate(-45deg);
+      box-shadow: 0 0 150px var(--ruby), inset 0 0 50px #fff;
+      animation: colossalBeat 1.4s ease-in-out infinite;
+    }
+    .colossal-heart::before, .colossal-heart::after {
+      content: ''; position: absolute; width: 200px; height: 200px;
+      background: inherit; border-radius: 50%;
+      box-shadow: inherit;
+    }
+    .colossal-heart::before { top: -100px; left: 0; }
+    .colossal-heart::after { top: 0; left: 100px; }
+    
+    @keyframes colossalBeat {
+      0%{ transform: translate(-50%, -50%) rotate(-45deg) scale(0.8) translateZ(-200px); filter: brightness(1) drop-shadow(0 0 100px var(--ruby)); }
+      20%{ transform: translate(-50%, -50%) rotate(-45deg) scale(1.2) translateZ(100px); filter: brightness(1.5) drop-shadow(0 0 300px var(--rose)); }
+      40%{ transform: translate(-50%, -50%) rotate(-45deg) scale(0.9) translateZ(-50px); filter: brightness(1.2); }
+      60%{ transform: translate(-50%, -50%) rotate(-45deg) scale(1.3) translateZ(150px); filter: brightness(1.6) drop-shadow(0 0 350px var(--gold)); }
+      100%{ transform: translate(-50%, -50%) rotate(-45deg) scale(0.8) translateZ(-200px); filter: brightness(1); }
+    }
+
+    #finale-canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 5; mix-blend-mode: screen; }
+
+    .finale-ui {
+      position: absolute; inset: 0; display: flex; flex-direction: column;
+      align-items: center; justify-content: flex-end; padding-bottom: 10vh;
+      z-index: 50; transform-style: preserve-3d; pointer-events: none;
+    }
+
+    .finale-huge-text {
+      font-family: 'Great Vibes', cursive;
+      font-size: clamp(3rem, 12vw, 8rem);
+      color: #fff;
+      text-shadow: 0 0 30px var(--rose), 0 0 100px var(--gold);
+      opacity: 0; transform: translateZ(-1000px) scale(0.1);
+      transition: all 4s cubic-bezier(0.175, 0.885, 0.32, 1.275) 1s;
+      text-align: center; line-height: 1.1;
+    }
+    .finale-huge-text.show { opacity: 1; transform: translateZ(200px) scale(1); }
+
+    .finale-poem {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: clamp(1rem, 4vw, 2rem);
+      color: var(--gold);
+      margin-top: 2rem; text-align: center;
+      opacity: 0; transform: translateY(50px) translateZ(50px);
+      transition: all 3s ease 3s;
+      text-shadow: 0 5px 20px rgba(0,0,0,0.9);
+      max-width: 80%;
+    }
+    .finale-poem.show { opacity: 1; transform: translateY(0) translateZ(50px); }
+
+    .finale-btn {
+      margin-top: 3rem; padding: 1.2rem 4rem;
+      background: linear-gradient(135deg, var(--rose) 0%, var(--gold) 100%);
+      border: 2px solid #fff; border-radius: 50px;
+      color: var(--dark); font-family: 'Outfit', sans-serif; font-size: 1.2rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase;
+      box-shadow: 0 20px 50px rgba(255,45,120,0.8), inset 0 0 20px rgba(255,255,255,0.8);
+      cursor: pointer; pointer-events: auto; opacity: 0;
+      transform: translateY(100px); transition: all 2s ease 5s;
+    }
+    .finale-btn.show { opacity: 1; transform: translateY(0); }
+    .finale-btn:hover { transform: scale(1.1); box-shadow: 0 30px 60px var(--gold); }
+
+    /* Orbital rings around the heart */
+    .orbital-ring {
+      position: absolute; top:50%; left:50%;
+      border: 3px solid rgba(255,207,51,0.5); border-radius: 50%;
+      transform-style: preserve-3d;
+      animation: spinRing 10s linear infinite;
+    }
+    @keyframes spinRing { 100% { transform: translate(-50%,-50%) rotateX(var(--rx)) rotateY(var(--ry)) rotateZ(360deg); } }
+
+    /* Floating Deep Phrases */
+    .deep-phrase {
+      position: absolute; font-family: 'Cinzel Decorative', serif; font-weight: 700;
+      color: rgba(255,255,255,0.9); text-shadow: 0 0 20px var(--rose), 0 0 10px var(--gold);
+      pointer-events: none; transform-style: preserve-3d; opacity:0;
+    }
+    @keyframes flyThruSpace {
+      0% { opacity:0; transform: translate3d(var(--x), var(--y), -3000px) rotate(var(--rot)); filter: blur(10px); }
+      30% { opacity:1; filter: blur(0px); }
+      70% { opacity:1; filter: blur(0px); }
+      100% { opacity:0; transform: translate3d(var(--xend), var(--yend), 1000px) rotate(calc(var(--rot)*-1)); filter: blur(20px); }
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="ambient-canvas"></canvas>
+
+<header>
+  <h1>Amor Eterno</h1>
+  <p class="desc">Alinea las estrellas de nuestro destino✨</p>
+</header>
+
+<div class="hud">
+  <div class="hud-box">
+    <div class="hud-label">Eternidad</div>
+    <div class="hud-val" id="timer">00:00</div>
+  </div>
+  <div class="hud-box">
+    <div class="hud-label">Universo</div>
+    <div class="hud-val" id="score">0</div>
+  </div>
+</div>
+
+<div class="game-wrap">
+  <div class="board-container">
+    <div class="board-scene" id="boardScene">
+      <div class="board-outer">
+        <div class="corner c-tl"></div><div class="corner c-tr"></div>
+        <div class="corner c-bl"></div><div class="corner c-br"></div>
+        
+        <div id="grid"></div>
+        
+        <!-- 3D Ribbon Selector -->
+        <svg id="selection-layer">
+          <defs>
+            <linearGradient id="gold-rose-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#ffcf33" />
+              <stop offset="50%" stop-color="#fff" />
+              <stop offset="100%" stop-color="#ff2d78" />
+            </linearGradient>
+            <linearGradient id="pure-gold" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#ffe680" />
+              <stop offset="50%" stop-color="#ffcf33" />
+              <stop offset="100%" stop-color="#b38600" />
+            </linearGradient>
+          </defs>
+          <g id="active-line-group" class="sel-line-group" style="display:none;">
+            <line id="active-line-glow" class="sel-line" x1="0" y1="0" x2="0" y2="0"></line>
+            <line id="active-line-core" class="sel-line-glow" x1="0" y1="0" x2="0" y2="0"></line>
+          </g>
+        </svg>
+        <div id="found-lines"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="words-panel">
+    <div id="word-list"></div>
+  </div>
+</div>
+
+<!-- ========================================================
+     FINALE OVERLAY: THE MOST ROMANTIC EVER
+     ======================================================== -->
+<div id="completion-overlay">
+  <canvas id="finale-canvas"></canvas>
+  
+  <div class="colossal-heart-container" id="heart-container">
+    <div class="orbital-ring" style="width: 500px; height: 500px; --rx: 60deg; --ry: 20deg;"></div>
+    <div class="orbital-ring" style="width: 400px; height: 400px; --rx: -45deg; --ry: 45deg;"></div>
+    <div class="orbital-ring" style="width: 600px; height: 600px; --rx: 20deg; --ry: -60deg;"></div>
+    <div class="colossal-heart"></div>
+  </div>
+
+  <div id="phrases-universe"></div>
+
+  <div class="finale-ui">
+    <div id="finale-title" class="finale-huge-text">Eres el Amor<br>de mi Vida</div>
+    <div id="finale-poem" class="finale-poem">Cada latido, cada suspiro, es y será por siempre tuyo. Mi alma te pertenece.</div>
+    <button class="finale-btn" id="finale-btn" onclick="restartGame()">Reescribir las Estrellas 💫</button>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════════════
+//  EXTREME 3D ENGINE & LOGIC
+// ════════════════════════════════════════════════════════════
+
+const FULL_WORD_POOL = [
+  'AMOR','ALMA','CORAZON','PASION','ETERNIDAD','SUSURRO','CARICIA','LATIDO',
+  'PROMESA','DESEO','ADORAR','ILUSION','ROMANCE','ABRAZO','ESTRELLA','DULZURA',
+  'SUBLIME','INFINITO','DESTINO','VIDA','UNIVERSO','MILAGRO','CIELO','MAGIA'
+];
+
+const DEEP_PHRASES = [
+  "Dueña de mi eternidad", "Tú eres mi universo", "Juntos para siempre",
+  "Mil vidas te buscaría", "Amor verdadero", "Mi estrella guía",
+  "Luz de mi oscuridad", "Mi principio y mi fin", "Bendita tu existencia"
+];
+
+const GRID_SIZE = 12; // 12x12 ensures it is quite difficult on a phone, but not microscopic
+const WORDS_TO_FIND = 12;
+const ICONS = ['💖','✨','🌹','💍','🔥','⭐','🦋','💎','💌','💘','💝','💓'];
+
+let ROMANTIC_WORDS = [], grid = [], cellEls = [], wrapperEls = [];
+let selecting = false, selStart = null, selCurrent = null, currentPathCells = [];
+let foundWords = new Set(), foundCells = new Set(), placedWords = [];
+let timerInterval, elapsed = 0, score = 0, gameActive = false;
+let cellRects = [], gridRect = null;
+
+const gridEl = document.getElementById('grid');
+const lineGroup = document.getElementById('active-line-group');
+const lineGlow = document.getElementById('active-line-glow');
+const lineCore = document.getElementById('active-line-core');
+const foundLinesDiv = document.getElementById('found-lines');
+const boardScene = document.getElementById('boardScene');
+
+function initGame() {
+  ROMANTIC_WORDS = [...FULL_WORD_POOL].sort(()=>0.5-Math.random()).slice(0, WORDS_TO_FIND);
+  grid = Array.from({length: GRID_SIZE}, () => Array(GRID_SIZE).fill(''));
+  cellEls = []; wrapperEls = []; selecting = false; selStart = null; selCurrent = null; currentPathCells = [];
+  foundWords = new Set(); foundCells = new Set(); placedWords = [];
+  elapsed = 0; score = 0;
+  
+  lineGroup.style.display = 'none'; foundLinesDiv.innerHTML = '';
+  document.body.classList.remove('is-selecting');
+  clearInterval(timerInterval); timerInterval = setInterval(updateTimer, 1000);
+  gameActive = true;
+
+  placeWords(); fillGrid(); renderGrid(); renderWordList(); updateHUD();
+  
+  requestAnimationFrame(updateGeometry);
+  setTimeout(() => boardScene.style.transform = `rotateX(25deg) rotateY(0deg) translateZ(-20px)`, 100);
+}
+
+function placeWords() {
+  const dirs = [ [0,1],[1,0],[1,1],[1,-1], [0,-1],[-1,0],[-1,-1],[-1,1] ];
+  const wordsToPlace = [...ROMANTIC_WORDS].sort((a,b)=>b.length-a.length);
+  for (const word of wordsToPlace) {
+    let placed = false, attempts = 0;
+    while (!placed && attempts<200) {
+      attempts++;
+      const [dr, dc] = dirs[Math.floor(Math.random()*dirs.length)];
+      const len = word.length;
+      const minR = dr<0?len-1:0, startR = minR+Math.floor(Math.random()*(GRID_SIZE-Math.abs(dr)*len));
+      const minC = dc<0?len-1:0, startC = minC+Math.floor(Math.random()*(GRID_SIZE-Math.abs(dc)*len));
+      const endR = startR+dr*(len-1), endC = startC+dc*(len-1);
+      if (endR<0||endR>=GRID_SIZE||endC<0||endC>=GRID_SIZE) continue;
+
+      let ok = true; const cells = [];
+      for (let i=0; i<len; i++) {
+        const r=startR+dr*i, c=startC+dc*i;
+        if(grid[r][c]!=='' && grid[r][c]!==word[i]) { ok=false; break; }
+        cells.push([r,c]);
+      }
+      if(!ok) continue;
+      for (let i=0; i<len; i++) grid[cells[i][0]][cells[i][1]] = word[i];
+      placedWords.push({ word, cells, dir: [dr,dc] });
+      placed = true;
+    }
+  }
+}
+
+function fillGrid() {
+  const ALPHABET = 'ABCDEFGHIJKLMNÑOPQRSTUVWXYZ';
+  // Create a string of all letters used in chosen words to act as camouflage
+  const wordLetters = ROMANTIC_WORDS.join(''); 
+  
+  for(let r=0;r<GRID_SIZE;r++) {
+    for(let c=0;c<GRID_SIZE;c++) {
+      if(!grid[r][c]) {
+        // 60% chance to pick a letter that belongs to the romantic words (makes it visually harder to spot words)
+        // 40% chance to pick purely random letter
+        if (Math.random() > 0.4 && wordLetters.length > 0) {
+          grid[r][c] = wordLetters[Math.floor(Math.random() * wordLetters.length)];
+        } else {
+          grid[r][c] = ALPHABET[Math.floor(Math.random() * ALPHABET.length)];
+        }
+      }
+    }
+  }
+}
+
+function renderGrid() {
+  gridEl.style.gridTemplateColumns = `repeat(${GRID_SIZE}, 1fr)`;
+  gridEl.innerHTML = ''; cellEls = []; wrapperEls = [];
+  for(let r=0; r<GRID_SIZE; r++) {
+    cellEls[r]=[]; wrapperEls[r]=[];
+    for(let c=0; c<GRID_SIZE; c++) {
+      const wrap = document.createElement('div'); wrap.className = 'cell-wrapper';
+      wrap.dataset.r=r; wrap.dataset.c=c;
+      const el = document.createElement('div'); el.className = 'cell';
+      el.innerHTML = `<span>${grid[r][c]}</span>`;
+      wrap.appendChild(el); gridEl.appendChild(wrap);
+      wrapperEls[r][c] = wrap; cellEls[r][c] = el;
+    }
+  }
+}
+
+function renderWordList() {
+  const wl=document.getElementById('word-list'); wl.innerHTML='';
+  placedWords.forEach(({word},i) => {
+    const el = document.createElement('div'); el.className='word-item'; el.id=`word-${word}`;
+    el.innerHTML = `<span style="font-size:1.2rem">${ICONS[i%ICONS.length]}</span><span>${word}</span>`;
+    wl.appendChild(el);
+  });
+}
+
+function updateHUD() { document.getElementById('score').textContent = score; }
+function updateTimer() {
+  if(!gameActive) return; elapsed++;
+  document.getElementById('timer').textContent = `${String(Math.floor(elapsed/60)).padStart(2,'0')}:${String(elapsed%60).padStart(2,'0')}`;
+}
+
+// ── RIGID TOUCH & RAYCASTING ────────────────────────────
+function updateGeometry() {
+  const w = gridEl.offsetWidth, h = gridEl.offsetHeight;
+  cellRects = [];
+  for(let r=0;r<GRID_SIZE;r++){
+    cellRects[r]=[];
+    for(let c=0;c<GRID_SIZE;c++){ cellRects[r][c] = { cx:(c+0.5)*(w/GRID_SIZE), cy:(r+0.5)*(h/GRID_SIZE) }; }
+  }
+}
+
+document.addEventListener('touchmove', e => { if(gameActive) e.preventDefault(); }, {passive:false});
+window.addEventListener('resize', updateGeometry);
+gridEl.addEventListener('pointerdown', handlePointerDown);
+window.addEventListener('pointermove', handlePointerMove);
+window.addEventListener('pointerup', handlePointerUp);
+window.addEventListener('pointercancel', handlePointerUp);
+gridEl.addEventListener('touchstart', handlePointerDown, {passive:false});
+window.addEventListener('touchmove', handlePointerMove, {passive:false});
+window.addEventListener('touchend', handlePointerUp);
+
+function getCellFromPoint(clientX, clientY) {
+  const el = document.elementFromPoint(clientX, clientY);
+  if(!el) return null;
+  const wrap = el.closest('.cell-wrapper');
+  if(wrap) return [parseInt(wrap.dataset.r,10), parseInt(wrap.dataset.c,10)];
+  return null;
+}
+
+// Jitter-free dramatic tilt
+function updateBoardTilt(x,y) {
+   if(window.innerWidth<768) return;
+   const cx=window.innerWidth/2, cy=window.innerHeight/2;
+   const rotX = 25 + ((y-cy)/cy)*15, rotY = ((x-cx)/cx)*20;
+   boardScene.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg) translateZ(-20px)`;
+}
+
+function spawnTouchSparkle(x,y) {
+   const sp = document.createElement('div'); sp.className = 'touch-sparkle';
+   sp.style.left=x+'px'; sp.style.top=y+'px';
+   const size = Math.random()*30+15; sp.style.width=size+'px'; sp.style.height=size+'px';
+   sp.style.setProperty('--tx',(Math.random()-0.5)*200+'px'); sp.style.setProperty('--ty',(Math.random()-0.5)*200+'px');
+   document.body.appendChild(sp); setTimeout(()=>sp.remove(), 500);
+}
+
+function handlePointerDown(e) {
+  if(!gameActive) return;
+  const cx = e.touches ? e.touches[0].clientX : e.clientX, cy = e.touches ? e.touches[0].clientY : e.clientY;
+  const cell = getCellFromPoint(cx,cy);
+  if(cell) {
+    updateGeometry(); selecting=true; selStart=cell; selCurrent=cell;
+    document.body.classList.add('is-selecting');
+    lineGroup.style.display='block'; lineGroup.classList.remove('valid');
+    updateSelectionVisuals(); spawnTouchSparkle(cx,cy);
+  }
+}
+
+function handlePointerMove(e) {
+  if(!gameActive) return;
+  const cx = e.touches ? e.touches[0].clientX : e.clientX, cy = e.touches ? e.touches[0].clientY : e.clientY;
+  if(!selecting) { updateBoardTilt(cx, cy); return; }
+  
+  if(Math.random()>0.5) spawnTouchSparkle(cx,cy);
+  const cell = getCellFromPoint(cx,cy);
+  if(cell) selCurrent=cell;
+  updateSelectionVisuals();
+}
+
+function handlePointerUp() {
+  if(!selecting) return;
+  selecting=false; document.body.classList.remove('is-selecting');
+  checkWord();
+  currentPathCells.forEach(([r,c]) => wrapperEls[r][c].classList.remove('selected-visual'));
+  lineGroup.style.display='none'; selStart=null; selCurrent=null; currentPathCells=[];
+  if(window.innerWidth>=768) boardScene.style.transform = `rotateX(25deg) rotateY(0deg) translateZ(-20px)`;
+}
+
+function getValidLinePath(r1,c1,r2,c2) {
+  const dr=r2-r1, dc=c2-c1, len=Math.max(Math.abs(dr),Math.abs(dc));
+  if(len===0) return [[r1,c1]];
+  if(dr!==0 && dc!==0 && Math.abs(dr)!==Math.abs(dc)) return Math.abs(dr)>Math.abs(dc)?getValidLinePath(r1,c1,r2,c1):getValidLinePath(r1,c1,r1,c2);
+  const sr=dr===0?0:dr/Math.abs(dr), sc=dc===0?0:dc/Math.abs(dc), cells=[];
+  for(let i=0;i<=len;i++) cells.push([r1+sr*i,c1+sc*i]); return cells;
+}
+
+function updateSelectionVisuals() {
+  if(!selStart||!selCurrent) return;
+  currentPathCells.forEach(([r,c]) => wrapperEls[r][c].classList.remove('selected-visual'));
+  currentPathCells = getValidLinePath(selStart[0],selStart[1],selCurrent[0],selCurrent[1]);
+  currentPathCells.forEach(([r,c]) => wrapperEls[r][c].classList.add('selected-visual'));
+  
+  if(currentPathCells.length>0) {
+    const p1=cellRects[currentPathCells[0][0]][currentPathCells[0][1]];
+    const p2=cellRects[currentPathCells[currentPathCells.length-1][0]][currentPathCells[currentPathCells.length-1][1]];
+    [lineGlow,lineCore].forEach(l=>{ l.setAttribute('x1',p1.cx); l.setAttribute('y1',p1.cy); l.setAttribute('x2',p2.cx); l.setAttribute('y2',p2.cy); });
+    
+    const w = currentPathCells.map(([r,c])=>grid[r][c]).join('');
+    if(placedWords.some(p=>!foundWords.has(p.word)&&(p.word===w||p.word===w.split('').reverse().join('')))) lineGroup.classList.add('valid');
+    else lineGroup.classList.remove('valid');
+  }
+}
+
+function checkWord() {
+  if(!currentPathCells.length) return;
+  const w = currentPathCells.map(([r,c])=>grid[r][c]).join('');
+  let matchW=null, matchC=null;
+  for(const p of placedWords) {
+    if(foundWords.has(p.word)) continue;
+    if(p.word===w || p.word===w.split('').reverse().join('')) { matchW=p.word; matchC=p.cells; break; }
+  }
+
+  if(matchW) {
+    foundWords.add(matchW); score+=matchW.length*50+1000;
+    matchC.forEach(([r,c]) => { foundCells.add(`${r},${c}`); wrapperEls[r][c].classList.add('found'); });
+    create3DFoundHighlight(matchC);
+    document.getElementById(`word-${matchW}`).classList.add('found-word');
+    updateHUD();
+    
+    // Massive explosion
+    matchC.forEach(([r,c],i)=>{
+       setTimeout(()=>{
+         const rx=cellEls[r][c].getBoundingClientRect();
+         for(let k=0;k<5;k++) spawnTouchSparkle(rx.left+rx.width/2, rx.top+rx.height/2);
+       }, i*80);
+    });
+
+    if(foundWords.size===placedWords.length) setTimeout(triggerSuperMassiveFinale, 1000);
+  }
+}
+
+function create3DFoundHighlight(cells) {
+   const first=cellRects[cells[0][0]][cells[0][1]], last=cellRects[cells[cells.length-1][0]][cells[cells.length-1][1]];
+   const len=Math.hypot(last.cx-first.cx, last.cy-first.cy), ang=Math.atan2(last.cy-first.cy, last.cx-first.cx)*180/Math.PI;
+   const pill=document.createElement('div');
+   pill.style.cssText = `position:absolute; left:${first.cx}px; top:${first.cy}px; width:${len}px; height:36px; transform-origin:0 50%;
+   transform: translateY(-18px) rotate(${ang}deg) translateZ(20px); background: linear-gradient(90deg, var(--gold), #fffea6);
+   border-radius:20px; box-shadow: 0 10px 40px var(--gold), inset 0 2px 10px #fff; pointer-events:none; z-index:90;
+   animation: expandPill 0.6s cubic-bezier(0.175,0.885,0.32,1.275);`;
+   
+   if(!document.getElementById('pA')) document.head.insertAdjacentHTML('beforeend',`<style id="pA">@keyframes expandPill{from{width:0;opacity:0}to{opacity:1}}</style>`);
+   foundLinesDiv.appendChild(pill);
+}
+
+// ── IMMERSIVE AMBIENT BACKGROUND ───────────────────────
+function initAmbient() {
+  const canvas = document.getElementById('ambient-canvas'); const ctx = canvas.getContext('2d');
+  function rs() { canvas.width=window.innerWidth; canvas.height=window.innerHeight; } window.addEventListener('resize', rs); rs();
+  const parts = Array.from({length: 100},()=>({
+    x:Math.random()*canvas.width, y:Math.random()*canvas.height, z:Math.random()*2,
+    vx:(Math.random()-0.5)*0.3, vy:-Math.random()*1 - 0.5, hue:Math.random()>0.8?45:340, p:Math.random()*Math.PI*2
+  }));
+  function draw() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    parts.forEach(p => {
+      p.x+=p.vx; p.y+=p.vy; p.p+=0.02; if(p.y<0){p.y=canvas.height; p.x=Math.random()*canvas.width;}
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.z*2, 0, Math.PI*2);
+      ctx.fillStyle=`hsla(${p.hue}, 100%, 75%, ${0.2+Math.sin(p.p)*0.3})`;
+      ctx.shadowBlur=10; ctx.shadowColor=`hsl(${p.hue}, 100%, 70%)`; ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+// ── OVERPOWERING ROMANTIC FINALE ───────────────────────
+function triggerSuperMassiveFinale() {
+  gameActive=false; clearInterval(timerInterval);
+  const ol = document.getElementById('completion-overlay'); ol.classList.add('active');
+  const canvas = document.getElementById('finale-canvas'); const ctx = canvas.getContext('2d');
+  function rs() { canvas.width=window.innerWidth; canvas.height=window.innerHeight; } window.addEventListener('resize', rs); rs();
+
+  // Draw pure visual insanity on canvas (golden stardust, flying rubies, lightbeams)
+  const particles=[];
+  for(let i=0;i<500;i++){
+    const ang=Math.random()*Math.PI*2, sp=Math.random()*30+5;
+    particles.push({
+      x:canvas.width/2, y:canvas.height/2, vx:Math.cos(ang)*sp, vy:Math.sin(ang)*sp,
+      r:Math.random()*8+2, c:['#ff2d78','#ffd700','#fff','#c90035','#ffdbe3'][Math.floor(Math.random()*5)],
+      life:1, d:Math.random()*0.005+0.002, g:0.05, type:Math.random()>0.6?'feather':'star'
+    });
+  }
+
+  let f=0;
+  function fL() {
+    if(!ol.classList.contains('active')) return;
+    f++; ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    for(let i=particles.length-1;i>=0;i--) {
+      const p=particles[i]; p.x+=p.vx; p.y+=p.vy; p.vy+=p.g; p.life-=p.d;
+      if(p.type==='feather') p.vx+=Math.sin(f*0.1+p.life)*0.5; // flutter
+      if(p.life<=0){particles.splice(i,1);continue;}
+      
+      ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.vx*0.2); ctx.globalAlpha=p.life;
+      if(p.type==='star') {
+        ctx.fillStyle=p.c; ctx.shadowBlur=20; ctx.shadowColor=p.c;
+        ctx.beginPath(); ctx.arc(0,0,p.r,0,Math.PI*2); ctx.fill();
+      } else {
+        // Red rose petal
+        ctx.fillStyle='#c90035'; ctx.beginPath(); ctx.ellipse(0,0,p.r*1.5, p.r/1.5, 0,0,Math.PI*2); ctx.fill();
+      }
+      ctx.restore();
+    }
+    
+    // Constant rain of love
+    if(f%2===0) {
+       particles.push({ x:Math.random()*canvas.width, y:-20, vx:(Math.random()-0.5)*5, vy:Math.random()*10+5, r:Math.random()*10+5, life:1, d:0.003, g:0.02, type:'feather' });
+    }
+    requestAnimationFrame(fL);
+  }
+  fL();
+
+  // Launch deep phrases diving from deep 3D space
+  const pu = document.getElementById('phrases-universe');
+  setInterval(()=>{
+     if(!ol.classList.contains('active')) return;
+     const div=document.createElement('div'); div.className='deep-phrase';
+     div.textContent = DEEP_PHRASES[Math.floor(Math.random()*DEEP_PHRASES.length)];
+     const sx=(Math.random()-0.5)*150, sy=(Math.random()-0.5)*150; // vw/vh
+     const ex=sx+(Math.random()-0.5)*50, ey=sy+(Math.random()-0.5)*50;
+     div.style.setProperty('--x', sx+'vw'); div.style.setProperty('--y', sy+'vh');
+     div.style.setProperty('--xend', ex+'vw'); div.style.setProperty('--yend', ey+'vh');
+     div.style.setProperty('--rot', (Math.random()-0.5)*60+'deg');
+     div.style.top='50%'; div.style.left='50%';
+     div.style.fontSize = (Math.random()*4+2)+'rem';
+     div.style.animation = 'flyThruSpace 12s cubic-bezier(0.2,0,0.8,1) forwards';
+     pu.appendChild(div); setTimeout(()=>div.remove(), 12000);
+  }, 800);
+
+  // Cinematic Sequences
+  setTimeout(()=>document.getElementById('finale-title').classList.add('show'), 2000);
+  setTimeout(()=>document.getElementById('finale-poem').classList.add('show'), 4000);
+  setTimeout(()=>document.getElementById('finale-btn').classList.add('show'), 6000);
+}
+
+function restartGame() {
+  document.getElementById('completion-overlay').classList.remove('active');
+  document.getElementById('finale-title').classList.remove('show');
+  document.getElementById('finale-poem').classList.remove('show');
+  document.getElementById('finale-btn').classList.remove('show');
+  document.getElementById('phrases-universe').innerHTML='';
+  initGame();
+}
+
+initAmbient(); initGame();
+</script>
+</body>
+</html>
